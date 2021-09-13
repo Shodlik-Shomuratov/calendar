@@ -1,24 +1,22 @@
 const db = require("../config/db");
 
-const find = () => {
+const findAllUsers = () => {
     return db("users");
 };
 
-const findById = id => {
+const findUserById = id => {
     return db("users").where('id', id);
 }; 
 
-const findByUsername = username => {
+const findUserByUsername = username => {
     return db("users").where('username', username);
 };
 
-const findByUsernameAndPassword = (username, password) => {
+const findUserByUsernameAndPassword = (username, password) => {
     return db("users").where('username', username).andWhere('password', password);
 };
 
 const addUser = user => {
-    // const countUsers = db("users").count("username");
-    // console.log(countUsers);
     return db("users").insert(user);
 };
 
@@ -31,10 +29,10 @@ const removeUser = id => {
 };
 
 module.exports = {
-    find,
-    findById,
-    findByUsername,
-    findByUsernameAndPassword,
+    findAllUsers,
+    findUserById,
+    findUserByUsername,
+    findUserByUsernameAndPassword,
     addUser,
     updateUser,
     removeUser

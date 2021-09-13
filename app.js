@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const usersRouter = require("./routes/users.js");
-const datesRouter = require("./routes/dates.js");
 
 // Middleware
 server.use(cors());
@@ -14,6 +13,5 @@ server.use(express.json());
 
 // Routers
 server.use("/", usersRouter);
-server.use("/api/dates", datesRouter);
 
 module.exports = server;
