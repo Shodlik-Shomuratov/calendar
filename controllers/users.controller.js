@@ -1,4 +1,5 @@
-const Users = require("../models/users.js");
+const Users = require("../models/users.model");
+const Tasks = require("../models/tasks.model");
 
 // get All Users from Database
 exports.getAllUsers = async (req, res) => {
@@ -33,16 +34,13 @@ exports.addUser = async (req, res) => {
     } else {
         try {
             const userExists = await Users.findUserByUsername(newUser.username);
-            console.log(userExists);
             if(userExists.length) {
                 res.status(200).json({ message: 'Bu nom bilan foydalanuvchi saqlangan!' }); 
             } else {
                 const user = await Users.addUser(newUser);
                 res.status(201).json(user);
-                
             }
         } catch (error) {
-
             res.status(500).json({error: error});
         }
     }
@@ -62,11 +60,24 @@ exports.updateUser = async (req, res) => {
 
 // remove User by ID from Database
 exports.removeUser = async (req, res) => {
-    const userId = req.body;
+    const userId = req.params.id;
     try {
-        
-        const deleting = await Users.removeUser;
-        res.status(200).json(deleting);
+        const hasUser = await Users.findUserById(userId);
+        if(!hasUser.length){
+            res.status(404).json({ message: "Bunday foydalanuvchi yo'q!" });
+        } else {
+            const deleting = await Users.removeUser(userId);
+            if(deleting){
+                const deletingTasks = await Tasks.deletingTasksByUserId(userId);
+                console.log(deletingTasks);
+                res.status(200).json({
+                    userMessage: "Foydalanuvchi o'chirildi!",
+                    taskMessage: "Foydalanuvchiga oid barcha tasklar o'chirildi!"
+                });
+            } else {
+                res.status(500).json({ message: "O'chirishda xatolik!" });
+            }
+        }
     } catch (error) {
         res.status(500).json({ error: "Serverga ulanishda xatolik!" });
     }
